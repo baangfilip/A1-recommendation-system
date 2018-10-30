@@ -7,7 +7,6 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -18,18 +17,15 @@ import com.google.gson.Gson;
 import se.kb222vt.endpoint.RecommendationController;
 import se.kb222vt.entities.MovieEntity;
 import se.kb222vt.entities.UserEntity;
-import spark.Spark;
 import spark.servlet.SparkApplication;
-import spark.staticfiles.StaticFiles;
 
 
 public class Application implements SparkApplication {
 	//putting some logic here since it will be so much overhead to put it somewhere else
-	private static HashMap<Integer, UserEntity> users = new HashMap<>();
-	private static HashMap<String, MovieEntity> movies = new HashMap<>();
+	private static final HashMap<Integer, UserEntity> users = new HashMap<>();
+	private static final HashMap<String, MovieEntity> movies = new HashMap<>();
 	
 	private Gson gson = new Gson();
-	//https://github.com/tipsy/spark-basic-structure/blob/master/src/main/java/app/book/BookController.java
 	//http://zetcode.com/java/spark/
 	@Override
 	public void init() {
@@ -48,6 +44,8 @@ public class Application implements SparkApplication {
         try {
 			initUsers();
 	        initMovies();
+	        System.out.println("Found " + users.values().size() + " users");
+	        System.out.println("Found " + movies.values().size() + " movies");
 		} catch (IOException e) {
 			System.err.println("Couldnt read users or movies");
 			e.printStackTrace();
@@ -80,9 +78,9 @@ public class Application implements SparkApplication {
             	movie =  new MovieEntity(title);
             }
             UserEntity user = users.get(userID);
-            user.addRatedMovie(movie, rating);
+            user.addRatedMovie(movie.getTitle(), rating);
             System.out.println(user.getUserName() + " rated " + movie.getTitle() + " : " + rating);
-            movie.addUserRating(user, rating);
+            movie.addUserRating(user.getUserID(), rating);
             movies.put(title, movie);
         }
         csv.close();

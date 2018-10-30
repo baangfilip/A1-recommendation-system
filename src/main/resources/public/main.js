@@ -27,19 +27,32 @@ function formToJson(form){
 function getRec(form){
 	$.getJSON(`/API/rec/user/${form.similarityMeasure}/${form.userID}`, function(data) {
 		let movies = [];
-		$.each( data.recommendedMovies, function(key, movie) {
+		$.each(data.recommendedMovies, function(score, movie) {
+			score = parseFloat(score).toFixed(2);
 			if(movies.length == 0)
-				movies.push(`<li class="list-group-item">${movie.score} ${movie.title} <span class="badge badge-pill badge-success">Best match!</span></li>`);
+				movies.push(`<li class="list-group-item"><span class="score first">${score}</span> ${movie.title} <span class="badge badge-pill badge-success">Best match!</span></li>`);
 			else
-				movies.push(`<li class="list-group-item">${movie.score} ${movie.title}</li>`);
+				movies.push(`<li class="list-group-item"><span class="score">${score}</span> ${movie.title}</li>`);
 				
 		});
-		$("#movie-results ol").html(movies.join(""));
+		if(movies.length){
+			$("#movie-results ol").html(movies.join(""));
+		}else{
+			//no recommended movies
+			$("#movie-results ol").html(`<small class="text-muted">Couldnt find any recommendations, this can be because you have watched all movies already or doesnt have any similar users</small>`);
+		}
 
 		let users = [];
-		$.each( data.similarUsers, function(key, user) {
-			users.push(`<li class="list-group-item">${key} ${user.userName}</li>`);
+		$.each(data.similarUsers, function(score, user) {
+			score = parseFloat(score).toFixed(2);
+			users.push(`<li class="list-group-item"><span class="score">${score}</span> ${user.userName}</li>`);
 		});
-		$("#user-results ol").html(users.join(""));
+
+		if(users.length){
+			$("#user-results ol").html(users.join(""));
+		}else{
+			//no recommended users
+			$("#user-results ol").html(`<div class="alert alert-secondary" role="alert">Start rating movies so we can find similar users</div>`);
+		}
 	});
 }

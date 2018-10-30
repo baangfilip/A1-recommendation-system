@@ -14,8 +14,8 @@ public class MovieEntity {
 		return this.title;
 	}
 	
-	public void addUserRating(UserEntity user, double rating) {
-		userRatings.put(user.getUserID(), rating);
+	public void addUserRating(int userID, double rating) {
+		userRatings.put(userID, rating);
 	}
 	
 	public boolean equals(MovieEntity other){

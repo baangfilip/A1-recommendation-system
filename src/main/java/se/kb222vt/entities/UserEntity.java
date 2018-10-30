@@ -1,12 +1,11 @@
 package se.kb222vt.entities;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UserEntity {
 	private String userName = "";
 	private int userID;
-	private HashMap<MovieEntity, Double> movieRatings = new HashMap<>();
+	private HashMap<String, Double> movieRatings = new HashMap<>();
 	
 	public UserEntity(String userName, int userID) {
 		this.userName = userName;
@@ -21,12 +20,12 @@ public class UserEntity {
 		return userID;
 	}
 	
-	public HashMap<MovieEntity, Double> getRatedMovies(){
+	public HashMap<String, Double> getRatedMovies(){
 		return movieRatings;
 	}
 	
-	public void addRatedMovie(MovieEntity movie, double rating) {
-		movieRatings.put(movie, rating);
+	public void addRatedMovie(String title, double rating) {
+		movieRatings.put(title, rating);
 	}
 	
 	public boolean equals(UserEntity other){

@@ -1,3 +1,6 @@
-main{
-	padding-top: 100px;
+.score{
+	font-size:14pt;	
+}
+.score.first{
+	font-size:18pt;
 }

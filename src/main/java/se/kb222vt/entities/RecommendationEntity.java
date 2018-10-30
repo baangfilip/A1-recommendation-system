@@ -8,7 +8,7 @@ import java.util.TreeMap;
 public class RecommendationEntity {
 	private UserEntity recommendationFor; //recommendation for this user
 	private SortedMap<Double, UserEntity> similarUsers = new TreeMap<>(); //similarScore, User, sorted descending
-	private ArrayList<MovieEntity> recommendedMovies = new ArrayList<>();
+	private SortedMap<Double, MovieEntity> recommendedMovies = new TreeMap<>();
 	
 	public RecommendationEntity(UserEntity user) {
 		this.recommendationFor = user;
@@ -22,11 +22,11 @@ public class RecommendationEntity {
 		this.similarUsers = similarUsers;
 	}
 
-	public ArrayList<MovieEntity> getRecommendedMovies() {
+	public SortedMap<Double, MovieEntity> getRecommendedMovies() {
 		return recommendedMovies;
 	}
 
-	public void setRecommendedMovies(ArrayList<MovieEntity> recommendedMovies) {
+	public void setRecommendedMovies(SortedMap<Double, MovieEntity> recommendedMovies) {
 		this.recommendedMovies = recommendedMovies;
 	}
 
