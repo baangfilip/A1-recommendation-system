@@ -19,19 +19,24 @@ import se.kb222vt.entities.MovieEntity;
 import se.kb222vt.entities.UserEntity;
 import spark.servlet.SparkApplication;
 
-
+//Start Application by web.xml
 public class Application implements SparkApplication {
 	//putting some logic here since it will be so much overhead to put it somewhere else
 	private static final HashMap<Integer, UserEntity> users = new HashMap<>();
 	private static final HashMap<String, MovieEntity> movies = new HashMap<>();
 	
+	//CSV-location when running from Servlet
+	private String usersCSV = "webapps/rec/WEB-INF/classes/data/movies/users.csv"; //This will not work for any name for the webapp: https://github.com/perwendel/spark/pull/658/files
+	private String moviesCSV = "webapps/rec/WEB-INF/classes/data/movies/ratings.csv"; //This will not work for any name for the webapp: https://github.com/perwendel/spark/pull/658/files
 	private Gson gson = new Gson();
-	//http://zetcode.com/java/spark/
+	
 	@Override
 	public void init() {
 		System.out.println("Start endpoints");
-		externalStaticFileLocation("src/main/resources/public");
-		port(8080);
+		exception(IllegalArgumentException.class, (e, req, res) -> {
+			  res.status(404);
+			  res.body(gson.toJson(e));
+			});
         get("/API/rec/user/euclidean/:userID", RecommendationController.euclidean);
         get("/API/rec/user/pearson/:userID", RecommendationController.pearson);
         get("/API/users", (req, res) -> {
@@ -42,18 +47,20 @@ public class Application implements SparkApplication {
         });
         
         try {
+        	System.out.println("Load users");
 			initUsers();
+        	System.out.println("Load movies");
 	        initMovies();
 	        System.out.println("Found " + users.values().size() + " users");
 	        System.out.println("Found " + movies.values().size() + " movies");
 		} catch (IOException e) {
-			System.err.println("Couldnt read users or movies");
+			System.out.println("Couldnt read users or movies: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
 	
 	private void initUsers() throws IOException {
-        Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/data/movies/users.csv"));
+        Reader reader = Files.newBufferedReader(Paths.get(usersCSV).toAbsolutePath());
         CSVParser csv = new CSVParser(reader, CSVFormat.newFormat(';').withFirstRecordAsHeader());
         for (CSVRecord line : csv) {
             String userName = line.get(0);
@@ -64,7 +71,7 @@ public class Application implements SparkApplication {
 	}
 	
 	private void initMovies() throws IOException {
-		Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/data/movies/ratings.csv"));
+		Reader reader = Files.newBufferedReader(Paths.get(moviesCSV));
         CSVParser csv = new CSVParser(reader, CSVFormat.newFormat((";").toCharArray()[0]).withFirstRecordAsHeader().withQuote('"'));
         for(UserEntity user : users.values())
         	System.out.println(user.getUserID() + " : " + user.getUserName());
@@ -92,6 +99,13 @@ public class Application implements SparkApplication {
 	
 	public static HashMap<Integer, UserEntity> getUsers() {
 		return users;
+	}
+	
+	public void setUsersCSV(String path) {
+		this.usersCSV = path;
+	}
+	public void setMoviesCSV(String path) {
+		this.moviesCSV = path;
 	}
 	
 }

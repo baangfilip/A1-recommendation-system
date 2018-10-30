@@ -13,8 +13,12 @@ import se.kb222vt.entities.UserEntity;
 
 public class RecommendationLogic {
 	
-	public RecommendationEntity userRecEuclidean(int userID) {
-		UserEntity user = Application.getUsers().get(userID);
+	/**
+	 * Get recommendation for movies for user using euclidean similarity measure. Will not include movies the user has already seen.
+	 * @param user to get recommendations for
+	 * @return RecommendationEntity
+	 */
+	public RecommendationEntity userRecEuclidean(UserEntity user) {
 		SortedMap<Double, UserEntity> similarUsers = findSimilarUsersEuclidean(user);
 		//got similar persons and their similarity
 		SortedMap<Double, MovieEntity> movieRec = getWeightedScoresForUnwatchedMovies(similarUsers, getUnwatchedMovies(user));
@@ -24,8 +28,12 @@ public class RecommendationLogic {
 		return rec;
 	}
 	
-	public RecommendationEntity userRecPearson(int userID) {
-		UserEntity user = Application.getUsers().get(userID);
+	/**
+	 * Get recommendation for movies for user using Pearson similarity measure. Will not include movies the user has already seen.
+	 * @param user to get recommendations for
+	 * @return RecommendationEntity
+	 */
+	public RecommendationEntity userRecPearson(UserEntity user) {
 		SortedMap<Double, UserEntity> similarUsers = findSimilarUsersPearson(user);
 		//got similar persons and their similarity
 		SortedMap<Double, MovieEntity> movieRec = getWeightedScoresForUnwatchedMovies(similarUsers, getUnwatchedMovies(user));
