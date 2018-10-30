@@ -14,12 +14,12 @@ public class RecommendationController {
 	static Gson gson = new Gson();
 
     public static Route pearson = (Request request, Response response) -> {
-    	String userName = request.queryParams("userName");
-    	return gson.toJson(logic.userRecPearson(userName));
+    	int userID = Integer.parseInt(request.params("userID"));
+    	return gson.toJson(logic.userRecPearson(userID));
     };
-    public static Route euclidian = (Request request, Response response) -> {
-    	String userName = request.queryParams("userName");
-    	return gson.toJson(logic.userRecEuclidian(userName));
+    public static Route euclidean = (Request request, Response response) -> {
+    	int userID = Integer.parseInt(request.params("userID"));
+    	return gson.toJson(logic.userRecEuclidean(userID));
     };
         
       

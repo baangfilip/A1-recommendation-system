@@ -36,8 +36,8 @@ public class Application implements SparkApplication {
 		System.out.println("Start endpoints");
 		externalStaticFileLocation("src/main/resources/public");
 		port(8080);
-        get("/API/rec/user/euclidian", RecommendationController.euclidian);
-        get("/API/rec/user/pearson", RecommendationController.pearson);
+        get("/API/rec/user/euclidean/:userID", RecommendationController.euclidean);
+        get("/API/rec/user/pearson/:userID", RecommendationController.pearson);
         get("/API/users", (req, res) -> {
         	return gson.toJson(users);
         });
@@ -80,6 +80,8 @@ public class Application implements SparkApplication {
             	movie =  new MovieEntity(title);
             }
             UserEntity user = users.get(userID);
+            user.addRatedMovie(movie, rating);
+            System.out.println(user.getUserName() + " rated " + movie.getTitle() + " : " + rating);
             movie.addUserRating(user, rating);
             movies.put(title, movie);
         }

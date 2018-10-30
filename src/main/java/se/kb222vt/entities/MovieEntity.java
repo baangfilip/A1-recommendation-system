@@ -7,20 +7,22 @@ public class MovieEntity {
 	private HashMap<Integer, Double> userRatings = new HashMap<>();
 	
 	public MovieEntity(String title) {
-		this.setTitle(title);
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
 		this.title = title;
 	}
 
+	public String getTitle(){
+		return this.title;
+	}
+	
 	public void addUserRating(UserEntity user, double rating) {
-		System.out.println("User: " + user.getUserName() + " rated: " + rating);
 		userRatings.put(user.getUserID(), rating);
+	}
+	
+	public boolean equals(MovieEntity other){
+		if(this == other || other.getTitle().equals(this.title)) {
+			return true;
+		}
+		return false;
 	}
 	
 }
