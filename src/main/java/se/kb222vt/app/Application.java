@@ -56,6 +56,7 @@ public class Application implements SparkApplication {
 			System.out.println("Couldnt read users or movies: " + e.getMessage());
 			e.printStackTrace();
 		}
+        //TODO: preload item based recommendations here maybe
 	}
 	
 	private void initUsers() throws IOException {
