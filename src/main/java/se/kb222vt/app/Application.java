@@ -37,8 +37,7 @@ public class Application implements SparkApplication {
 			  res.status(404);
 			  res.body(gson.toJson(e));
 			});
-        get("/API/rec/user/euclidean/:userID", RecommendationController.euclidean);
-        get("/API/rec/user/pearson/:userID", RecommendationController.pearson);
+        get("/API/rec/user/:measure/:userID", RecommendationController.userBasedRecommendation);
         get("/API/users", (req, res) -> {
         	return gson.toJson(users);
         });

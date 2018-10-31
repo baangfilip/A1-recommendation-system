@@ -14,52 +14,19 @@ import se.kb222vt.entities.UserEntity;
 public class RecommendationLogic {
 	
 	/**
-	 * Get recommendation for movies for user using euclidean similarity measure. Will not include movies the user has already seen.
+	 * Get recommendation for movies for user using euclidean or pearson similarity measure. Will not include movies the user has already seen.
 	 * @param user to get recommendations for
 	 * @return RecommendationEntity
+	 * @throws Exception 
 	 */
-	public RecommendationEntity userRecEuclidean(UserEntity user) {
-		SortedMap<Double, UserEntity> similarUsers = findSimilarUsersEuclidean(user);
+	public RecommendationEntity userRec(UserEntity user, String measure) throws Exception {
+		SortedMap<Double, UserEntity> similarUsers = findSimilarUsers(user, measure);
 		//got similar persons and their similarity
 		SortedMap<Double, MovieEntity> movieRec = getWeightedScoresForUnwatchedMovies(similarUsers, getUnwatchedMovies(user));
 		RecommendationEntity rec = new RecommendationEntity(user);
 		rec.setRecommendedMovies(movieRec);
 		rec.setSimilarUsers(similarUsers);
 		return rec;
-	}
-	
-	/**
-	 * Get recommendation for movies for user using Pearson similarity measure. Will not include movies the user has already seen.
-	 * @param user to get recommendations for
-	 * @return RecommendationEntity
-	 */
-	public RecommendationEntity userRecPearson(UserEntity user) {
-		SortedMap<Double, UserEntity> similarUsers = findSimilarUsersPearson(user);
-		//got similar persons and their similarity
-		SortedMap<Double, MovieEntity> movieRec = getWeightedScoresForUnwatchedMovies(similarUsers, getUnwatchedMovies(user));
-		RecommendationEntity rec = new RecommendationEntity(user);
-		rec.setRecommendedMovies(movieRec);
-		rec.setSimilarUsers(similarUsers);
-		return rec;
-	}	
-	
-	/**
-	 * Find similar users by calculating Pearson correlation score between other users that have watched the same movies
-	 * @param user find similar users to user
-	 * @return a SortedMap with users sorted descending, the most similar user first
-	 */
-	private SortedMap<Double, UserEntity> findSimilarUsersPearson(UserEntity user) {
-		SortedMap<Double, UserEntity> similarUsers = new TreeMap<Double, UserEntity>().descendingMap();
-		for(UserEntity u : Application.getUsers().values()) {
-			if(u.equals(user))
-				continue;
-			double similarity = pearsonCorrelationUsers(user, u);
-			System.out.println(user.getUserName() + " is " + similarity + "s to: " + u.getUserName());
-			if(similarity > 0) {
-				similarUsers.put(similarity, u);
-			}
-		}
-		return similarUsers;
 	}
 	
 	/**
@@ -96,16 +63,30 @@ public class RecommendationLogic {
 	
 	
 	/**
-	 * Find similar users by calculating euclidean distance between other users that have watched the same movies
+	 * Find similar users by calculating pearson or using euclidean distance between other users that have watched the same movies
 	 * @param user find similar users to user
+	 * @param measure use pearson or euclidean
 	 * @return a SortedMap with users sorted descending, the most similar user first
+	 * @throws Exception 
 	 */
-	private SortedMap<Double, UserEntity> findSimilarUsersEuclidean(UserEntity user) {
+	private SortedMap<Double, UserEntity> findSimilarUsers(UserEntity user, String measure) throws Exception {
 		SortedMap<Double, UserEntity> similarUsers = new TreeMap<Double, UserEntity>().descendingMap();
 		for(UserEntity u : Application.getUsers().values()) {
 			if(u.equals(user))
 				continue;
-			double similarity = euclideanDistanceUsers(user, u);
+			measure = measure.toLowerCase();
+			double similarity = 0;
+			switch(measure) {
+				case "euclidean":
+					similarity = euclideanDistanceUsers(user, u);
+					break;
+				case "pearson":
+					similarity = pearsonCorrelationUsers(user, u);
+					break;
+				default: 
+					throw new Exception("Measure is not supported");
+					
+			}
 			System.out.println(user.getUserName() + " is " + similarity + "s to: " + u.getUserName());
 			if(similarity > 0) {
 				similarUsers.put(similarity, u);
