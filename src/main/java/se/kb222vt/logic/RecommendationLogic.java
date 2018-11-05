@@ -87,7 +87,7 @@ public class RecommendationLogic {
 					throw new Exception("Measure is not supported");
 					
 			}
-			System.out.println(user.getUserName() + " is " + similarity + "s to: " + u.getUserName());
+			//System.out.println(user.getUserName() + " is " + similarity + "s to: " + u.getUserName());
 			if(similarity > 0) {
 				similarUsers.put(similarity, u);
 			}
@@ -109,7 +109,7 @@ public class RecommendationLogic {
 			double rating = entry.getValue();
 			if(anotherUserRatings.containsKey(title)) { //anotherUser have rated this movie
 				double movieRatingOther = anotherUserRatings.get(title);
-				System.out.println("Both " + user.getUserName() + " and " + anotherUser.getUserName() + " have watched " + title);
+				//System.out.println("Both " + user.getUserName() + " and " + anotherUser.getUserName() + " have watched " + title);
 				similarity += Math.pow(rating - movieRatingOther, 2);
 				matchingMovies++;
 			}else {
@@ -131,8 +131,8 @@ public class RecommendationLogic {
 	private SortedMap<Double, MovieEntity> getWeightedScoresForUnwatchedMovies(SortedMap<Double, UserEntity> similarUsers, ArrayList<MovieEntity> unwatchedMovies) {
 		HashMap<String, Double> weightedMovies = new HashMap<String, Double>();
 		SortedMap<Double, MovieEntity> movieRec = new TreeMap<Double, MovieEntity>().descendingMap();
-		System.out.println("SimilarUsers: " + similarUsers.size());
-		System.out.println("UnwatchedMovies: " + unwatchedMovies.size());
+		//System.out.println("SimilarUsers: " + similarUsers.size());
+		//System.out.println("UnwatchedMovies: " + unwatchedMovies.size());
 		
 		for(MovieEntity movie : unwatchedMovies) {
 			double totalSimilarityScoreForMovie = 0;

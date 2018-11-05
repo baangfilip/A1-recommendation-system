@@ -73,8 +73,6 @@ public class Application implements SparkApplication {
 	private void initMovies() throws IOException {
 		Reader reader = Files.newBufferedReader(Paths.get(moviesCSV));
         CSVParser csv = new CSVParser(reader, CSVFormat.newFormat((";").toCharArray()[0]).withFirstRecordAsHeader().withQuote('"'));
-        for(UserEntity user : users.values())
-        	System.out.println(user.getUserID() + " : " + user.getUserName());
         for (CSVRecord line : csv) {
             int userID = Integer.parseInt(line.get(0));
             String title = line.get(1);
@@ -86,7 +84,6 @@ public class Application implements SparkApplication {
             }
             UserEntity user = users.get(userID);
             user.addRatedMovie(movie.getTitle(), rating);
-            System.out.println(user.getUserName() + " rated " + movie.getTitle() + " : " + rating);
             movie.addUserRating(user.getUserID(), rating);
             movies.put(title, movie);
         }
